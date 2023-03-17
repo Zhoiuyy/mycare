@@ -19,7 +19,7 @@ from types import FrameType
 from flask import Flask
 
 from utils.logging import logger
-
+from test.readbody import read_node_status
 app = Flask(__name__)
 
 
@@ -43,6 +43,19 @@ def shutdown_handler(signal_int: int, frame: FrameType) -> None:
 
     # Safely exit program
     sys.exit(0)
+
+
+@app.route('/1')
+def index():
+    e_results = read_node_status()
+    print(e_results)
+
+    html = '<html><head><title>Cloud Server</title></head><body><h1>Global Temperatures</h1><table cellspacing="1" cellpadding="3" border="1"><tr><th>Device Name</th><th>Average Temperature</th></tr>'
+    for result in e_results:
+        html += '<tr><td>' + str(result[0]) + '</td><td>' + str(result[1]) + '</td></tr>'
+
+    html += '</body></html>'
+    return html
 
 
 if __name__ == "__main__":
